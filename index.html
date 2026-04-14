@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NutriReto">
+<meta name="application-name" content="NutriReto">
+<meta name="theme-color" content="#1B5E20">
+<meta name="description" content="Aprende hábitos saludables, completa retos y sube de nivel">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<title>NutriReto 🥗</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --g1:#1B5E20;--g2:#2E7D32;--g3:#43A047;--g4:#A5D6A7;--gp:#E8F5E9;
+  --org:#E65100;--orl:#FF8F00;--yel:#FFD600;
+  --red:#E53935;--blue:#1565C0;--purple:#6A1B9A;
+  --wht:#fff;--drk:#1B2B1C;--muted:#5A7A5C;
+  --r:20px;--shadow:0 6px 24px rgba(0,0,0,0.13);
+}
+body{font-family:'Nunito',sans-serif;background:#111;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+
+/* ── PHONE SHELL ── */
+.phone{
+  width:340px;height:720px;background:var(--gp);border-radius:40px;
+  overflow:hidden;position:relative;
+  box-shadow:0 0 0 10px #1a1a1a,0 0 0 12px #333,0 24px 64px rgba(0,0,0,0.7);
+}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:28px;background:#1a1a1a;border-radius:0 0 16px 16px;z-index:100}
+
+/* ── SCREENS ── */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;transition:opacity .3s}
+.screen.active{display:flex}
+
+/* ════════════════════════════════
+   SCREEN: SPLASH
+════════════════════════════════ */
+#splash{background:linear-gradient(160deg,#1B5E20 0%,#2E7D32 55%,#43A047 100%);align-items:center;justify-content:center;gap:0}
+.splash-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.particle{position:absolute;font-size:22px;animation:floatP linear infinite;opacity:.35}
+@keyframes floatP{from{transform:translateY(900px) rotate(0deg)}to{transform:translateY(-100px) rotate(360deg)}}
+.splash-logo{font-size:90px;animation:logoBounce 1.5s ease infinite alternate}
+@keyframes logoBounce{from{transform:translateY(0) scale(1)}to{transform:translateY(-12px) scale(1.05)}}
+.splash-title{font-family:'Fredoka One',cursive;font-size:52px;color:#fff;margin-top:8px;text-shadow:0 4px 16px rgba(0,0,0,.3)}
+.splash-sub{color:var(--g4);font-size:15px;margin-top:6px;text-align:center;padding:0 40px;line-height:1.5}
+.btn-start{
+  margin-top:40px;background:var(--yel);color:var(--drk);
+  font-family:'Fredoka One',cursive;font-size:22px;
+  padding:16px 60px;border-radius:100px;border:none;cursor:pointer;
+  box-shadow:0 6px 24px rgba(255,214,0,.5);
+  animation:pulse 2s ease infinite;transition:transform .15s
+}
+.btn-start:active{transform:scale(.95)}
+@keyframes pulse{0%,100%{box-shadow:0 6px 24px rgba(255,214,0,.5)}50%{box-shadow:0 6px 40px rgba(255,214,0,.8)}}
+.splash-hint{color:rgba(255,255,255,.5);font-size:12px;margin-top:18px}
+
+/* ════════════════════════════════
+   SCREEN: REGISTRO
+════════════════════════════════ */
+#registro{background:var(--gp);padding:60px 28px 28px}
+.reg-title{font-family:'Fredoka One',cursive;font-size:32px;color:var(--g1);margin-bottom:6px}
+.reg-sub{color:var(--muted);font-size:14px;margin-bottom:32px}
+.reg-label{font-size:13px;font-weight:700;color:var(--g1);margin-bottom:6px;display:block}
+.reg-input{
+  width:100%;padding:14px 18px;border-radius:14px;border:2px solid var(--g4);
+  font-family:'Nunito',sans-serif;font-size:16px;color:var(--drk);
+  background:#fff;margin-bottom:20px;outline:none;transition:border .2s
+}
+.reg-input:focus{border-color:var(--g2)}
+.reg-avatars{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.avatar-opt{
+  width:60px;height:60px;border-radius:50%;border:3px solid transparent;
+  font-size:30px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;background:#fff;transition:all .2s;box-shadow:var(--shadow)
+}
+.avatar-opt.sel{border-color:var(--g2);background:var(--gp);transform:scale(1.15)}
+.btn-primary{
+  width:100%;padding:16px;background:var(--g2);color:#fff;
+  font-family:'Fredoka One',cursive;font-size:20px;border:none;
+  border-radius:16px;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s
+}
+.btn-primary:active{transform:scale(.97)}
+
+/* ════════════════════════════════
+   SCREEN: HOME
+════════════════════════════════ */
+#home{background:var(--gp)}
+.home-header{
+  background:linear-gradient(135deg,var(--g1),var(--g2));
+  padding:50px 22px 28px;border-radius:0 0 32px 32px;
+  box-shadow:0 8px 24px rgba(27,94,32,.35)
+}
+.home-top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.home-greeting{color:rgba(255,255,255,.8);font-size:13px}
+.home-name{color:#fff;font-family:'Fredoka One',cursive;font-size:24px;margin-top:2px}
+.home-avatar-sm{width:46px;height:46px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:24px;border:2.5px solid var(--yel)}
+.xp-label-row{display:flex;justify-content:space-between;color:rgba(255,255,255,.75);font-size:12px;margin-bottom:6px}
+.xp-track{background:rgba(255,255,255,.2);border-radius:100px;height:10px;overflow:hidden}
+.xp-fill{height:100%;background:var(--yel);border-radius:100px;transition:width 1s ease;box-shadow:0 0 12px var(--yel)}
+.level-badge{display:inline-block;background:var(--yel);color:var(--drk);font-weight:900;font-size:11px;padding:3px 12px;border-radius:100px;margin-top:8px}
+
+.home-body{flex:1;overflow-y:auto;padding:18px 18px 90px;scrollbar-width:none}
+.home-body::-webkit-scrollbar{display:none}
+.section-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin:18px 0 10px}
+
+/* Reto destacado */
+.reto-destacado{
+  background:linear-gradient(120deg,var(--orl),var(--org));
+  border-radius:20px;padding:18px;color:#fff;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:0 6px 20px rgba(230,81,0,.35);cursor:pointer;
+  transition:transform .15s
+}
+.reto-destacado:active{transform:scale(.97)}
+.reto-big-ico{font-size:44px}
+.reto-info{flex:1}
+.reto-info h3{font-family:'Fredoka One',cursive;font-size:17px}
+.reto-info p{font-size:12px;opacity:.85;margin-top:3px}
+.reto-xp{background:rgba(255,255,255,.25);padding:6px 14px;border-radius:100px;font-size:13px;font-weight:900}
+
+/* Streak */
+.streak-card{background:#fff;border-radius:18px;padding:16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.streak-flame{font-size:36px}
+.streak-num{font-family:'Fredoka One',cursive;font-size:32px;color:var(--org)}
+.streak-label{font-size:12px;color:var(--muted)}
+
+/* Tips grid */
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.tip-card{background:#fff;border-radius:16px;padding:14px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s}
+.tip-card:active{transform:scale(.96)}
+.tip-ico{font-size:28px;margin-bottom:6px}
+.tip-name{font-size:13px;font-weight:700;color:var(--g1)}
+.tip-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  position:absolute;bottom:0;left:0;right:0;
+  height:78px;background:#fff;
+  display:flex;border-top:1px solid #E8F5E9;
+  padding-bottom:12px;box-shadow:0 -4px 20px rgba(0,0,0,.08)
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;border:none;background:none;cursor:pointer;
+  font-size:10px;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:700;
+  transition:color .2s
+}
+.nav-btn.active{color:var(--g2)}
+.nav-ico{font-size:22px}
+.nav-dot{width:5px;height:5px;border-radius:50%;background:var(--g2);margin-top:2px;opacity:0;transition:opacity .2s}
+.nav-btn.active .nav-dot{opacity:1}
+
+/* ════════════════════════════════
+   SCREEN: RETOS
+════════════════════════════════ */
+#retos{background:#fff}
+.retos-header{background:linear-gradient(135deg,var(--orl),var(--org));padding:50px 22px 22px;border-radius:0 0 28px 28px}
+.retos-header h2{font-family:'Fredoka One',cursive;font-size:28px;color:#fff}
+.retos-header p{color:rgba(255,255,255,.8);font-size:13px;margin-top:4px}
+.retos-tabs{display:flex;gap:8px;margin-top:14px}
+.tab-btn{padding:7px 18px;border-radius:100px;border:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
+.tab-btn.active{background:#fff;color:var(--org)}
+.tab-btn:not(.active){background:rgba(255,255,255,.2);color:#fff}
+
+.retos-body{flex:1;overflow-y:auto;padding:18px 18px 90px;scrollbar-width:none}
+.retos-body::-webkit-scrollbar{display:none}
+
+.reto-item{
+  background:var(--gp);border-radius:18px;padding:16px;margin-bottom:12px;
+  display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;
+  border:2px solid transparent
+}
+.reto-item:active{transform:scale(.97)}
+.reto-item.done{background:#F1F8E9;border-color:#A5D6A7}
+.reto-item.locked{opacity:.5;cursor:not-allowed}
+.ri-ico{font-size:34px;min-width:42px;text-align:center}
+.ri-body{flex:1}
+.ri-title{font-weight:900;font-size:14px;color:var(--drk)}
+.ri-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.ri-progress{height:5px;background:#ddd;border-radius:100px;margin-top:6px;overflow:hidden}
+.ri-prog-fill{height:100%;background:var(--g3);border-radius:100px;transition:width .5s}
+.ri-badge{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ri-xp{background:var(--org);color:#fff;font-size:11px;font-weight:900;padding:3px 10px;border-radius:100px}
+.ri-check{font-size:24px}
+.reto-item.done .ri-xp{background:var(--g2)}
+
+/* ════════════════════════════════
+   SCREEN: QUIZ
+════════════════════════════════ */
+#quiz{background:var(--gp)}
+.quiz-header{background:linear-gradient(135deg,#1565C0,#42A5F5);padding:50px 22px 22px;border-radius:0 0 28px 28px}
+.quiz-header h2{font-family:'Fredoka One',cursive;font-size:26px;color:#fff}
+.quiz-progress-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+.quiz-track{flex:1;height:8px;background:rgba(255,255,255,.25);border-radius:100px;overflow:hidden}
+.quiz-fill{height:100%;background:var(--yel);border-radius:100px;transition:width .4s}
+.quiz-counter{color:rgba(255,255,255,.8);font-size:12px;font-weight:700}
+
+.quiz-body{flex:1;padding:22px 20px 90px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column}
+.quiz-q-card{background:#fff;border-radius:20px;padding:22px;box-shadow:var(--shadow);margin-bottom:20px}
+.quiz-q-ico{font-size:44px;text-align:center;margin-bottom:12px}
+.quiz-q-text{font-size:17px;font-weight:900;color:var(--drk);text-align:center;line-height:1.4}
+.quiz-options{display:flex;flex-direction:column;gap:10px}
+.quiz-opt{
+  background:#fff;border:2.5px solid #E0E0E0;border-radius:14px;
+  padding:14px 18px;font-size:15px;font-weight:700;color:var(--drk);
+  cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;
+  transition:all .2s
+}
+.quiz-opt:active{transform:scale(.97)}
+.quiz-opt.correct{background:#E8F5E9;border-color:var(--g2);color:var(--g1)}
+.quiz-opt.wrong{background:#FFEBEE;border-color:var(--red);color:var(--red)}
+.quiz-opt:disabled{cursor:not-allowed}
+.quiz-feedback{
+  background:#fff;border-radius:16px;padding:16px;margin-top:14px;
+  text-align:center;font-size:14px;font-weight:700;display:none;
+  box-shadow:var(--shadow)
+}
+.quiz-feedback.show{display:block;animation:popIn .3s ease}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.quiz-next{
+  width:100%;padding:15px;background:var(--g2);color:#fff;
+  font-family:'Fredoka One',cursive;font-size:18px;border:none;
+  border-radius:14px;cursor:pointer;margin-top:12px;display:none;transition:transform .15s
+}
+.quiz-next:active{transform:scale(.97)}
+.quiz-next.show{display:block}
+
+/* ════════════════════════════════
+   SCREEN: PERFIL
+════════════════════════════════ */
+#perfil{background:var(--gp)}
+.perfil-header{background:linear-gradient(135deg,var(--g1),var(--g2));padding:50px 22px 30px;border-radius:0 0 32px 32px;text-align:center}
+.perfil-avatar{width:80px;height:80px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 10px;border:4px solid var(--yel)}
+.perfil-name{font-family:'Fredoka One',cursive;font-size:26px;color:#fff}
+.perfil-nivel{color:var(--g4);font-size:14px;margin-top:2px}
+.perfil-xp-big{font-family:'Fredoka One',cursive;font-size:18px;color:var(--yel);margin-top:6px}
+
+.perfil-body{flex:1;overflow-y:auto;padding:18px 18px 90px;scrollbar-width:none}
+.perfil-body::-webkit-scrollbar{display:none}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.stat-card{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+.stat-num{font-family:'Fredoka One',cursive;font-size:30px;color:var(--g2)}
+.stat-label{font-size:11px;color:var(--muted);margin-top:2px}
+.medallas-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.medallas-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.medalla{
+  background:#fff;border-radius:14px;padding:12px 8px;text-align:center;
+  box-shadow:var(--shadow);transition:transform .2s
+}
+.medalla.locked{opacity:.35;filter:grayscale(1)}
+.medalla-ico{font-size:26px}
+.medalla-name{font-size:9px;color:var(--muted);margin-top:4px;font-weight:700}
+
+/* ════════════════════════════════
+   MODAL: RETO COMPLETADO
+════════════════════════════════ */
+.modal-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.55);
+  display:none;align-items:center;justify-content:center;z-index:200;
+  backdrop-filter:blur(4px)
+}
+.modal-overlay.show{display:flex}
+.modal-box{
+  background:#fff;border-radius:28px;padding:32px 28px;
+  width:320px;text-align:center;animation:popIn .35s ease
+}
+.modal-ico{font-size:72px;margin-bottom:10px}
+.modal-title{font-family:'Fredoka One',cursive;font-size:28px;color:var(--g1)}
+.modal-sub{color:var(--muted);font-size:14px;margin:8px 0 20px;line-height:1.5}
+.modal-xp{
+  background:var(--g2);color:#fff;font-family:'Fredoka One',cursive;
+  font-size:22px;padding:10px 32px;border-radius:100px;
+  display:inline-block;margin-bottom:20px;
+  box-shadow:0 4px 16px rgba(46,125,50,.4)
+}
+.modal-close{
+  width:100%;padding:14px;background:var(--gp);color:var(--g1);
+  font-family:'Fredoka One',cursive;font-size:18px;border:none;
+  border-radius:14px;cursor:pointer
+}
+
+/* ════════════════════════════════
+   TOAST NOTIFICATION
+════════════════════════════════ */
+.toast{
+  position:absolute;top:50px;left:50%;transform:translateX(-50%) translateY(-80px);
+  background:var(--g1);color:#fff;padding:12px 24px;border-radius:100px;
+  font-size:14px;font-weight:700;white-space:nowrap;z-index:300;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1)
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ════════════════════════════════
+   CONFETTI
+════════════════════════════════ */
+.confetti-piece{
+  position:absolute;width:10px;height:10px;border-radius:2px;
+  animation:confettiFall linear forwards;pointer-events:none;z-index:250
+}
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(900px) rotate(720deg);opacity:0}
+}
+
+/* ════════════════════════════════
+   SCREEN: ADIVINA EL ALIMENTO
+════════════════════════════════ */
+#adivina{background:var(--gp)}
+.adivina-header{background:linear-gradient(135deg,#6A1B9A,#AB47BC);padding:50px 22px 22px;border-radius:0 0 28px 28px}
+.adivina-header h2{font-family:'Fredoka One',cursive;font-size:26px;color:#fff}
+.adivina-progress-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+.adivina-track{flex:1;height:8px;background:rgba(255,255,255,.25);border-radius:100px;overflow:hidden}
+.adivina-fill{height:100%;background:var(--yel);border-radius:100px;transition:width .4s}
+.adivina-counter{color:rgba(255,255,255,.8);font-size:12px;font-weight:700}
+.adivina-score-pill{background:rgba(255,255,255,.25);color:#fff;font-size:12px;font-weight:900;padding:4px 14px;border-radius:100px;margin-top:8px;display:inline-block}
+
+.adivina-body{flex:1;padding:22px 20px 90px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:14px}
+.adivina-body::-webkit-scrollbar{display:none}
+
+.adivina-pista-card{
+  background:#fff;border-radius:20px;padding:22px;
+  box-shadow:var(--shadow);text-align:center
+}
+.adivina-pista-ico{font-size:52px;margin-bottom:10px;animation:logoBounce 2s ease infinite alternate}
+.adivina-pista-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.adivina-pista-text{font-size:16px;font-weight:900;color:var(--drk);line-height:1.5}
+.adivina-hint-row{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.adivina-hint{background:var(--gp);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--g2)}
+
+.adivina-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.adivina-opt{
+  background:#fff;border:2.5px solid #E0E0E0;border-radius:16px;
+  padding:16px 10px;font-size:14px;font-weight:700;color:var(--drk);
+  cursor:pointer;text-align:center;font-family:'Nunito',sans-serif;
+  transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px
+}
+.adivina-opt .opt-ico{font-size:28px}
+.adivina-opt:active{transform:scale(.95)}
+.adivina-opt.correct{background:#E8F5E9;border-color:var(--g2);color:var(--g1)}
+.adivina-opt.wrong{background:#FFEBEE;border-color:var(--red);color:var(--red)}
+.adivina-opt:disabled{cursor:not-allowed}
+
+.adivina-feedback{
+  background:#fff;border-radius:16px;padding:16px;
+  text-align:center;font-size:14px;font-weight:700;display:none;
+  box-shadow:var(--shadow)
+}
+.adivina-feedback.show{display:block;animation:popIn .3s ease}
+.adivina-next{
+  width:100%;padding:15px;background:linear-gradient(135deg,#6A1B9A,#AB47BC);color:#fff;
+  font-family:'Fredoka One',cursive;font-size:18px;border:none;
+  border-radius:14px;cursor:pointer;display:none;transition:transform .15s
+}
+.adivina-next:active{transform:scale(.97)}
+.adivina-next.show{display:block}
+
+/* Level up animation */
+.levelup-banner{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
+  background:var(--yel);color:var(--drk);font-family:'Fredoka One',cursive;
+  font-size:22px;padding:16px 36px;border-radius:100px;z-index:400;
+  box-shadow:0 8px 32px rgba(255,214,0,.7);transition:transform .4s cubic-bezier(.34,1.56,.64,1)
+}
+.levelup-banner.show{transform:translate(-50%,-50%) scale(1)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"></div>
+  <div class="toast" id="toast"></div>
+  <div class="levelup-banner" id="levelup">⭐ ¡SUBISTE DE NIVEL!</div>
+
+  <!-- ══ SPLASH ══ -->
+  <div class="screen active" id="splash">
+    <div class="splash-particles" id="particles"></div>
+    <div class="splash-logo">🥗</div>
+    <div class="splash-title">NutriReto</div>
+    <div class="splash-sub">Aprende hábitos saludables,<br>completa retos y sube de nivel</div>
+    <button class="btn-start" onclick="goScreen('registro')">¡EMPEZAR! 🚀</button>
+    <div class="splash-hint">Toca para comenzar tu aventura</div>
+  </div>
+
+  <!-- ══ REGISTRO ══ -->
+  <div class="screen" id="registro" style="overflow-y:auto">
+    <div style="padding:60px 28px 40px">
+      <div class="reg-title">¡Hola! 👋</div>
+      <div class="reg-sub">Cuéntanos un poco de ti para personalizar tu experiencia</div>
+      <label class="reg-label">¿Cómo te llamas?</label>
+      <input class="reg-input" id="nameInput" type="text" placeholder="Tu nombre..." maxlength="20">
+      <label class="reg-label">Elige tu avatar</label>
+      <div class="reg-avatars" id="avatarPicker">
+        <div class="avatar-opt sel" data-av="🧑‍🎓">🧑‍🎓</div>
+        <div class="avatar-opt" data-av="👩‍🎓">👩‍🎓</div>
+        <div class="avatar-opt" data-av="🦊">🦊</div>
+        <div class="avatar-opt" data-av="🐸">🐸</div>
+        <div class="avatar-opt" data-av="🐼">🐼</div>
+        <div class="avatar-opt" data-av="🦋">🦋</div>
+        <div class="avatar-opt" data-av="🐯">🐯</div>
+        <div class="avatar-opt" data-av="🦁">🦁</div>
+        <div class="avatar-opt" data-av="🐺">🐺</div>
+        <div class="avatar-opt" data-av="🦄">🦄</div>
+        <div class="avatar-opt" data-av="🐉">🐉</div>
+        <div class="avatar-opt" data-av="🐧">🐧</div>
+        <div class="avatar-opt" data-av="🦅">🦅</div>
+        <div class="avatar-opt" data-av="🐬">🐬</div>
+        <div class="avatar-opt" data-av="🦊">🦊</div>
+        <div class="avatar-opt" data-av="🧙">🧙</div>
+        <div class="avatar-opt" data-av="🥷">🥷</div>
+        <div class="avatar-opt" data-av="🧜">🧜</div>
+      </div>
+      <label class="reg-label">Tu semestre</label>
+      <select class="reg-input" id="semInput">
+        <option value="">Selecciona...</option>
+        <option>1er semestre</option><option>2do semestre</option>
+        <option>3er semestre</option><option>4to semestre</option>
+        <option>5to semestre</option><option>6to semestre</option>
+        <option>7mo semestre</option><option>8vo semestre+</option>
+      </select>
+      <label class="reg-label">Tu especialidad</label>
+      <select class="reg-input" id="espInput">
+        <option value="">Selecciona...</option>
+        <option>Logística</option><option>Contabilidad</option>
+        <option>Programación</option><option>Urbanismo</option>
+        <option>Soporte</option><option>Mecánica Industrial</option>
+        <option>Electricidad</option><option>Adm. de Recursos Humanos</option>
+      </select>
+      <button class="btn-primary" onclick="startGame()">¡Jugar! 🎮</button>
+    </div>
+  </div>
+
+  <!-- ══ HOME ══ -->
+  <div class="screen" id="home">
+    <div class="home-header">
+      <div class="home-top-row">
+        <div>
+          <div class="home-greeting">¡Buenos días! ☀️</div>
+          <div class="home-name" id="homeNameDisplay">Jugador</div>
+        </div>
+        <div class="home-avatar-sm" id="homeAvatar">🧑‍🎓</div>
+      </div>
+      <div class="xp-label-row">
+        <span id="xpLabel">0 XP</span>
+        <span id="levelLabel">Nivel 1 🌱</span>
+      </div>
+      <div class="xp-track"><div class="xp-fill" id="xpBar" style="width:0%"></div></div>
+      <div class="level-badge" id="levelBadge">Nivel 1 · Semilla 🌱</div>
+    </div>
+    <div class="home-body">
+      <div class="section-title">🔥 Reto del día</div>
+      <div class="reto-destacado" onclick="goScreen('retos')">
+        <div class="reto-big-ico" id="retoDelDiaIco">🍎</div>
+        <div class="reto-info">
+          <h3 id="retoDelDiaTitulo">Come 1 fruta hoy</h3>
+          <p id="retoDelDiaDesc">¡Complétalo y gana XP!</p>
+        </div>
+        <div class="reto-xp" id="retoDelDiaXP">+50 XP</div>
+      </div>
+
+      <div class="section-title">⚡ Tu racha</div>
+      <div class="streak-card">
+        <div class="streak-flame">🔥</div>
+        <div>
+          <div class="streak-num" id="streakNum">0</div>
+          <div class="streak-label">días seguidos completando retos</div>
+        </div>
+      </div>
+
+      <div class="section-title">💡 Explora</div>
+      <div class="tips-grid">
+        <div class="tip-card" onclick="goScreen('quiz')">
+          <div class="tip-ico">🧠</div>
+          <div class="tip-name">Quiz Rápido</div>
+          <div class="tip-desc">Pon a prueba tus conocimientos</div>
+        </div>
+        <div class="tip-card" onclick="showTip()">
+          <div class="tip-ico">💡</div>
+          <div class="tip-name">Tip del Día</div>
+          <div class="tip-desc">Un consejo nutricional nuevo</div>
+        </div>
+        <div class="tip-card" onclick="goScreen('retos')">
+          <div class="tip-ico">🏆</div>
+          <div class="tip-name">Mis Retos</div>
+          <div class="tip-desc">Ver todos los desafíos</div>
+        </div>
+        <div class="tip-card" onclick="goScreen('perfil')">
+          <div class="tip-ico">⭐</div>
+          <div class="tip-name">Mi Perfil</div>
+          <div class="tip-desc">Ver progreso y medallas</div>
+        </div>
+        <div class="tip-card" onclick="goScreen('adivina')" style="grid-column:span 2;background:linear-gradient(120deg,#F3E5F5,#EDE7F6)">
+          <div class="tip-ico">🔍</div>
+          <div class="tip-name" style="color:#6A1B9A">Adivina el Alimento</div>
+          <div class="tip-desc">Lee las pistas y adivina qué comida es — ¡gana XP extra!</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav" id="homeNav">
+      <button class="nav-btn active" onclick="goScreen('home')"><span class="nav-ico">🏠</span>Inicio<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('retos')"><span class="nav-ico">🏆</span>Retos<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('quiz')"><span class="nav-ico">🧠</span>Quiz<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('perfil')"><span class="nav-ico">👤</span>Perfil<div class="nav-dot"></div></button>
+    </div>
+  </div>
+
+  <!-- ══ RETOS ══ -->
+  <div class="screen" id="retos">
+    <div class="retos-header">
+      <h2>🏆 Mis Retos</h2>
+      <p>Completa retos, gana XP y sube de nivel</p>
+      <div class="retos-tabs">
+        <button class="tab-btn active" onclick="filterRetos('hoy',this)">Hoy</button>
+        <button class="tab-btn" onclick="filterRetos('semana',this)">Semana</button>
+        <button class="tab-btn" onclick="filterRetos('todos',this)">Todos</button>
+      </div>
+    </div>
+    <div class="retos-body" id="retosBody"></div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="goScreen('home')"><span class="nav-ico">🏠</span>Inicio<div class="nav-dot"></div></button>
+      <button class="nav-btn active" onclick="goScreen('retos')"><span class="nav-ico">🏆</span>Retos<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('quiz')"><span class="nav-ico">🧠</span>Quiz<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('perfil')"><span class="nav-ico">👤</span>Perfil<div class="nav-dot"></div></button>
+    </div>
+  </div>
+
+  <!-- ══ QUIZ ══ -->
+  <div class="screen" id="quiz">
+    <div class="quiz-header">
+      <h2>🧠 Quiz Nutricional</h2>
+      <div class="quiz-progress-row">
+        <div class="quiz-track"><div class="quiz-fill" id="quizFill" style="width:0%"></div></div>
+        <div class="quiz-counter" id="quizCounter">1/20</div>
+      </div>
+    </div>
+    <div class="quiz-body" id="quizBody"></div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="goScreen('home')"><span class="nav-ico">🏠</span>Inicio<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('retos')"><span class="nav-ico">🏆</span>Retos<div class="nav-dot"></div></button>
+      <button class="nav-btn active" onclick="goScreen('quiz')"><span class="nav-ico">🧠</span>Quiz<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('perfil')"><span class="nav-ico">👤</span>Perfil<div class="nav-dot"></div></button>
+    </div>
+  </div>
+
+  <!-- ══ PERFIL ══ -->
+  <div class="screen" id="perfil">
+    <div class="perfil-header">
+      <div class="perfil-avatar" id="perfilAvatar">🧑‍🎓</div>
+      <div class="perfil-name" id="perfilName">Jugador</div>
+      <div class="perfil-nivel" id="perfilNivel">Semilla 🌱</div>
+      <div class="perfil-xp-big" id="perfilXP">0 XP Total</div>
+    </div>
+    <div class="perfil-body">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="stat-num" id="stRetos">0</div><div class="stat-label">Retos completados</div></div>
+        <div class="stat-card"><div class="stat-num" id="stStreak">0</div><div class="stat-label">Racha actual 🔥</div></div>
+        <div class="stat-card"><div class="stat-num" id="stQuiz">0</div><div class="stat-label">Quiz correctas</div></div>
+        <div class="stat-card"><div class="stat-num" id="stLevel">1</div><div class="stat-label">Nivel actual</div></div>
+      </div>
+      <div class="medallas-title">🏅 Mis Medallas</div>
+      <div class="medallas-grid" id="medallasGrid"></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="goScreen('home')"><span class="nav-ico">🏠</span>Inicio<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('retos')"><span class="nav-ico">🏆</span>Retos<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('quiz')"><span class="nav-ico">🧠</span>Quiz<div class="nav-dot"></div></button>
+      <button class="nav-btn active" onclick="goScreen('perfil')"><span class="nav-ico">👤</span>Perfil<div class="nav-dot"></div></button>
+    </div>
+  </div>
+
+  <!-- ══ ADIVINA EL ALIMENTO ══ -->
+  <div class="screen" id="adivina">
+    <div class="adivina-header">
+      <h2>🔍 Adivina el Alimento</h2>
+      <div class="adivina-progress-row">
+        <div class="adivina-track"><div class="adivina-fill" id="adivinaFill" style="width:0%"></div></div>
+        <div class="adivina-counter" id="adivinaCounter">1/8</div>
+
+      </div>
+      <div class="adivina-score-pill">⭐ <span id="adivinaScore">0</span> puntos</div>
+    </div>
+    <div class="adivina-body" id="adivinaBody"></div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="goScreen('home')"><span class="nav-ico">🏠</span>Inicio<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('retos')"><span class="nav-ico">🏆</span>Retos<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('quiz')"><span class="nav-ico">🧠</span>Quiz<div class="nav-dot"></div></button>
+      <button class="nav-btn" onclick="goScreen('perfil')"><span class="nav-ico">👤</span>Perfil<div class="nav-dot"></div></button>
+    </div>
+  </div>
+
+  <!-- ══ MODAL ══ -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-box">
+      <div class="modal-ico" id="modalIco">🎉</div>
+      <div class="modal-title" id="modalTitle">¡Reto Completado!</div>
+      <div class="modal-sub" id="modalSub">Has completado el reto del día</div>
+      <div class="modal-xp" id="modalXP">+50 XP</div>
+      <button class="modal-close" onclick="closeModal()">¡Genial! 🙌</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ STATE ══
+const state = {
+  name:'', avatar:'🧑‍🎓', sem:'', esp:'',
+  xp:0, level:1, streak:0,
+  retosCompleted:[],
+  retosCompletedSemana:[], // retos semanales completados
+  quizCorrect:0, quizTotal:0,
+  currentQuizQ:0, quizAnswered:false,
+  lastDayReset:'',   // 'YYYY-MM-DD' del último reset diario
+  lastWeekReset:''   // 'YYYY-Www' del último reset semanal
+};
+
+// ══ RESET POR FECHA ══
+function getTodayKey(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function getWeekKey(){
+  const d = new Date();
+  // Día de la semana: 0=Dom, 1=Lun... buscamos el lunes más reciente
+  const day = d.getDay();
+  const diff = (day===0) ? -6 : 1 - day; // retroceder hasta el lunes
+  const lunes = new Date(d);
+  lunes.setDate(d.getDate() + diff);
+  return lunes.getFullYear()+'-W'+String(Math.ceil((lunes.getDate())/7)).padStart(2,'0')+'-'+lunes.getMonth();
+}
+
+function checkResets(){
+  const hoy = getTodayKey();
+  const semana = getWeekKey();
+
+  // Reset diario (tipo:'hoy') a las 12:00am
+  if(state.lastDayReset !== hoy){
+    state.retosCompleted = state.retosCompleted.filter(id=>{
+      const r = retos.find(x=>x.id===id);
+      return r && r.tipo !== 'hoy';
+    });
+    state.lastDayReset = hoy;
+  }
+
+  // Reset semanal (tipo:'semana') cada lunes a las 12:00am
+  if(state.lastWeekReset !== semana){
+    state.retosCompleted = state.retosCompleted.filter(id=>{
+      const r = retos.find(x=>x.id===id);
+      return r && r.tipo !== 'semana';
+    });
+    state.lastWeekReset = semana;
+  }
+}
+
+// Revisar resets cada minuto por si llega la medianoche con la app abierta
+setInterval(checkResets, 60000);
+
+const levels = [
+  {name:'Semilla 🌱',min:0,max:200},
+  {name:'Brote 🌿',min:200,max:500},
+  {name:'Planta 🌱',min:500,max:1000},
+  {name:'Árbol 🌳',min:1000,max:2000},
+  {name:'Bosque 🌲',min:2000,max:4000},
+  {name:'NutriMaestro ⭐',min:4000,max:99999},
+];
+
+const retos = [
+  {id:1,ico:'🍎',title:'Come 1 fruta hoy',desc:'Manzana, plátano, naranja... ¡la que quieras!',xp:50,tipo:'hoy',prog:0,max:1},
+  {id:2,ico:'💧',title:'Toma 8 vasos de agua',desc:'Hidratarse es clave para concentrarte',xp:40,tipo:'hoy',prog:0,max:8},
+  {id:3,ico:'🌅',title:'Desayuna antes de la escuela',desc:'No salgas sin combustible',xp:60,tipo:'hoy',prog:0,max:1},
+  {id:4,ico:'🥗',title:'Lleva un lunch casero',desc:'Más sano y más económico que la cafetería',xp:80,tipo:'semana',prog:0,max:1},
+  {id:5,ico:'🥦',title:'Come verduras hoy',desc:'Al menos media taza cuenta',xp:50,tipo:'hoy',prog:0,max:1},
+  {id:6,ico:'🚫',title:'Sin frituras hoy',desc:'Un día sin papas ni chicharrón',xp:70,tipo:'hoy',prog:0,max:1},
+  {id:7,ico:'🍱',title:'3 comidas completas',desc:'Desayuno, comida y cena',xp:90,tipo:'semana',prog:0,max:3},
+  {id:8,ico:'🚶',title:'Camina 10 min después de comer',desc:'Ayuda a la digestión y al ánimo',xp:40,tipo:'semana',prog:0,max:1},
+  {id:9,ico:'🍫',title:'0 dulces o refrescos hoy',desc:'¡Tu cuerpo te lo agradecerá!',xp:80,tipo:'semana',prog:0,max:1},
+  {id:10,ico:'🥛',title:'Toma leche o yogur hoy',desc:'Calcio para tus huesos',xp:45,tipo:'todos',prog:0,max:1},
+];
+
+// En cada pregunta, correct:0 siempre = la respuesta correcta está en opts[0]
+// El shuffle de renderQuestion la mueve a una posición aleatoria cada vez
+const quizData = [
+  {ico:'🥗',q:'¿Cuántas porciones de frutas y verduras recomienda la OMS al día?',opts:['5 porciones','1 porción','2 porciones','10 porciones'],correct:0,exp:'La OMS recomienda al menos 5 porciones de frutas y verduras al día.'},
+  {ico:'💧',q:'¿Cuánta agua debe tomar un adolescente al día?',opts:['6-8 vasos','1-2 vasos','3-4 vasos','15 vasos'],correct:0,exp:'Se recomiendan entre 6 y 8 vasos de agua al día, más si hace ejercicio.'},
+  {ico:'🍳',q:'¿Cuál es la comida más importante del día?',opts:['El desayuno','La cena','El lunch','La merienda'],correct:0,exp:'El desayuno activa el metabolismo y da energía para aprender mejor en la escuela.'},
+  {ico:'🤔',q:'¿Qué nutriente te da energía más duradera?',opts:['Carbohidratos complejos','Azúcar','Grasa saturada','Sal'],correct:0,exp:'Los carbohidratos complejos (arroz, avena, pan integral) dan energía sostenida.'},
+  {ico:'🦷',q:'¿Qué bebida daña más los dientes?',opts:['Refresco/soda','Agua','Leche','Jugo natural'],correct:0,exp:'Los refrescos tienen mucha azúcar y ácido que desgastan el esmalte dental.'},
+  {ico:'🥩',q:'¿Cuál es una buena fuente de proteína completa?',opts:['Huevo','Frituras','Refresco','Dulces'],correct:0,exp:'El huevo, los frijoles, el pollo y el pescado son excelentes fuentes de proteína.'},
+  {ico:'☀️',q:'¿Qué vitamina nos ayuda a producir el sol en la piel?',opts:['Vitamina D','Vitamina A','Vitamina C','Vitamina B12'],correct:0,exp:'La vitamina D se produce en la piel con exposición solar y es clave para los huesos.'},
+  {ico:'🚀',q:'¿Comer bien impacta el rendimiento escolar?',opts:['Sí, mejora concentración y memoria','No tiene efecto','Solo en exámenes','Solo en deportes'],correct:0,exp:'Una buena alimentación mejora la concentración, la memoria y el estado de ánimo.'},
+  {ico:'🫀',q:'¿Qué grasa es saludable para el corazón?',opts:['Grasa insaturada (aguacate, nueces)','Grasa trans (frituras)','Manteca vegetal','Margarina industrial'],correct:0,exp:'Las grasas insaturadas del aguacate, aceite de oliva y nueces protegen el corazón.'},
+  {ico:'🦴',q:'¿Qué mineral es esencial para tener huesos fuertes?',opts:['Calcio','Sodio','Cloro','Yodo'],correct:0,exp:'El calcio, junto con la vitamina D, es el mineral principal para la salud ósea.'},
+  {ico:'🩸',q:'¿Qué nutriente previene la anemia?',opts:['Hierro','Potasio','Magnesio','Flúor'],correct:0,exp:'El hierro es esencial para producir hemoglobina. Se encuentra en la carne, legumbres y espinacas.'},
+  {ico:'🧠',q:'¿Qué ácido graso es fundamental para el cerebro?',opts:['Omega-3','Omega-6 en exceso','Grasa saturada','Colesterol LDL'],correct:0,exp:'El omega-3 (presente en pescado, chía y nueces) es clave para la función cerebral.'},
+  {ico:'🌽',q:'¿Qué son los carbohidratos simples?',opts:['Azúcares que dan energía rápida y corta','Fibra digestiva','Proteínas vegetales','Grasas saludables'],correct:0,exp:'Los carbohidratos simples (azúcar, pan blanco) elevan rápido la glucosa pero bajan igual de rápido.'},
+  {ico:'🥦',q:'¿Qué vitamina abunda en el brócoli y los cítricos?',opts:['Vitamina C','Vitamina K2','Vitamina B6','Vitamina E'],correct:0,exp:'La vitamina C refuerza el sistema inmune y ayuda a absorber el hierro. Brócoli y naranjas son ricos en ella.'},
+  {ico:'🍌',q:'¿Qué mineral del plátano ayuda a evitar calambres?',opts:['Potasio','Calcio','Hierro','Zinc'],correct:0,exp:'El potasio regula la contracción muscular. Por eso los deportistas comen plátano antes de competir.'},
+  {ico:'🫙',q:'¿Qué beneficio tiene el yogur natural?',opts:['Mejora la flora intestinal','Aumenta el colesterol','Eleva el azúcar en sangre','Daña los riñones'],correct:0,exp:'El yogur contiene probióticos que equilibran la microbiota intestinal y mejoran la digestión.'},
+  {ico:'🏃',q:'¿Cuántos minutos mínimos de actividad física recomienda la OMS para adolescentes al día?',opts:['60 minutos','10 minutos','20 minutos','90 minutos'],correct:0,exp:'La OMS recomienda al menos 60 minutos diarios de actividad física moderada-intensa para adolescentes.'},
+  {ico:'🍟',q:'¿Qué ocurre si comes frituras en exceso frecuentemente?',opts:['Aumenta el riesgo de enfermedades cardiovasculares','Fortalece los huesos','Mejora la concentración','Aumenta la vitamina D'],correct:0,exp:'Las grasas trans y saturadas de las frituras elevan el colesterol LDL y dañan las arterias.'},
+  {ico:'🥚',q:'¿Cuántos aminoácidos esenciales contiene el huevo?',opts:['9 aminoácidos esenciales','3 aminoácidos','5 aminoácidos','12 aminoácidos'],correct:0,exp:'El huevo es una proteína "completa" porque contiene los 9 aminoácidos esenciales que el cuerpo no puede fabricar.'},
+  {ico:'🌈',q:'¿Por qué se recomienda comer alimentos de distintos colores?',opts:['Cada color aporta vitaminas y antioxidantes diferentes','Solo es estético','Para mejorar el sabor','No tiene importancia nutricional'],correct:0,exp:'Los pigmentos naturales de frutas y verduras (licopeno, betacaroteno, clorofila) son potentes antioxidantes.'},
+];
+
+const medallas = [
+  {ico:'🥗',name:'Primera Fruta',cond:()=>state.retosCompleted.includes(1)},
+  {ico:'💧',name:'Hidratado',cond:()=>state.retosCompleted.includes(2)},
+  {ico:'🌅',name:'Madrugador',cond:()=>state.retosCompleted.includes(3)},
+  {ico:'🧠',name:'Quiz Master',cond:()=>state.quizCorrect>=5},
+  {ico:'🔥',name:'Racha x3',cond:()=>state.streak>=3},
+  {ico:'⭐',name:'Nivel 2+',cond:()=>state.level>=2},
+  {ico:'🏆',name:'5 Retos',cond:()=>state.retosCompleted.length>=5},
+  {ico:'🥦',name:'Verduras',cond:()=>state.retosCompleted.includes(5)},
+];
+
+const tips = [
+  '🥑 El aguacate tiene grasas "buenas" que ayudan al cerebro a concentrarse.',
+  '🫐 Los arándanos son "superalimentos" que mejoran la memoria. ¡Perfectos en el desayuno!',
+  '💧 Cuando sientes hambre a deshoras, primero toma agua. A veces es sed disfrazada.',
+  '🌈 Come el arcoíris: entre más colores de frutas y verduras, más vitaminas obtienes.',
+  '🍳 El huevo tiene proteína completa. Comerlo en el desayuno te mantiene lleno más tiempo.',
+  '🥜 Un puño de cacahuates o nueces es mejor snack que una bolsa de frituras.',
+  '🍌 El plátano tiene potasio que previene los calambres si haces ejercicio.',
+  '🫙 El yogur natural ayuda a tu digestión gracias a sus bacterias buenas.',
+];
+
+// ══ PARTICLES ══
+function initParticles(){
+  const p = document.getElementById('particles');
+  const emojis = ['🥦','🍎','🥕','🍇','🥑','🌽','🍓','🥝'];
+  for(let i=0;i<12;i++){
+    const d = document.createElement('div');
+    d.className='particle';
+    d.textContent=emojis[i%emojis.length];
+    d.style.left=Math.random()*100+'%';
+    d.style.animationDuration=(8+Math.random()*10)+'s';
+    d.style.animationDelay=Math.random()*8+'s';
+    d.style.fontSize=(16+Math.random()*18)+'px';
+    p.appendChild(d);
+  }
+}
+initParticles();
+
+// ══ AVATAR PICKER ══
+document.getElementById('avatarPicker').addEventListener('click',e=>{
+  const t = e.target.closest('.avatar-opt');
+  if(!t)return;
+  document.querySelectorAll('.avatar-opt').forEach(x=>x.classList.remove('sel'));
+  t.classList.add('sel');
+  state.avatar = t.dataset.av;
+});
+
+// ══ NAVIGATION ══
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // Actualizar nav activo en TODAS las pantallas
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.remove('active');
+    const dest = b.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+    if(dest===id) b.classList.add('active');
+  });
+  if(id==='home')updateHomeUI();
+  if(id==='retos'){checkResets();renderRetos('hoy');}
+  if(id==='quiz')initQuiz();
+  if(id==='adivina')initAdivina();
+  if(id==='perfil')updatePerfil();
+}
+
+// ══ START GAME ══
+function startGame(){
+  const name = document.getElementById('nameInput').value.trim();
+  if(!name){showToast('⚠️ Ingresa tu nombre');return;}
+  const sem = document.getElementById('semInput').value;
+  if(!sem){showToast('⚠️ Selecciona tu semestre');return;}
+  const esp = document.getElementById('espInput').value;
+  if(!esp){showToast('⚠️ Selecciona tu especialidad');return;}
+  state.name = name;
+  state.sem = sem;
+  state.esp = esp;
+  checkResets();
+  goScreen('home');
+  showToast('🎉 ¡Bienvenido, '+name+'!');
+}
+
+// ══ HOME UI ══
+function updateHomeUI(){
+  document.getElementById('homeNameDisplay').textContent = state.name||'Jugador';
+  document.getElementById('homeAvatar').textContent = state.avatar;
+  updateXPBar();
+  document.getElementById('streakNum').textContent = state.streak;
+  // Reto del día = primer reto no completado
+  const pending = retos.filter(r=>!state.retosCompleted.includes(r.id) && r.tipo==='hoy');
+  if(pending.length){
+    document.getElementById('retoDelDiaIco').textContent = pending[0].ico;
+    document.getElementById('retoDelDiaTitulo').textContent = pending[0].title;
+    document.getElementById('retoDelDiaDesc').textContent = pending[0].desc;
+    document.getElementById('retoDelDiaXP').textContent = '+'+pending[0].xp+' XP';
+  } else {
+    document.getElementById('retoDelDiaIco').textContent = '✅';
+    document.getElementById('retoDelDiaTitulo').textContent = '¡Todo completado!';
+    document.getElementById('retoDelDiaDesc').textContent = 'Increíble, eres un NutriHéroe';
+    document.getElementById('retoDelDiaXP').textContent = '🏆';
+  }
+}
+
+function updateXPBar(){
+  const lv = getLevelData();
+  const pct = Math.min(100,((state.xp - lv.min)/(lv.max - lv.min))*100);
+  document.getElementById('xpBar').style.width = pct+'%';
+  document.getElementById('xpLabel').textContent = state.xp+' XP';
+  document.getElementById('levelLabel').textContent = 'Nivel '+state.level;
+  document.getElementById('levelBadge').textContent = 'Nivel '+state.level+' · '+lv.name;
+}
+
+function getLevelData(){return levels[Math.min(state.level-1,levels.length-1)];}
+
+function addXP(amount){
+  const prevLevel = state.level;
+  state.xp += amount;
+  // Check level up
+  for(let i=0;i<levels.length;i++){
+    if(state.xp >= levels[i].min && state.xp < levels[i].max){
+      state.level = i+1; break;
+    }
+    if(i===levels.length-1) state.level = levels.length;
+  }
+  if(state.level > prevLevel) triggerLevelUp();
+  updateXPBar();
+  updatePerfil();
+}
+
+function triggerLevelUp(){
+  const b = document.getElementById('levelup');
+  b.textContent = '⭐ ¡NIVEL '+state.level+'!';
+  b.classList.add('show');
+  setTimeout(()=>b.classList.remove('show'),2200);
+  confetti();
+}
+
+// ══ RETOS ══
+function renderRetos(filter){
+  const body = document.getElementById('retosBody');
+  const filtered = filter==='todos' ? retos : retos.filter(r=>r.tipo===filter||filter==='hoy'&&r.tipo==='hoy');
+  body.innerHTML = '';
+  (filter==='todos'?retos:retos.filter(r=>filter==='hoy'?r.tipo==='hoy':r.tipo==='semana'||r.tipo==='hoy')).forEach(reto=>{
+    const done = state.retosCompleted.includes(reto.id);
+    const div = document.createElement('div');
+    div.className = 'reto-item'+(done?' done':'');
+    const progPct = done ? 100 : (reto.prog/reto.max)*100;
+    div.innerHTML = `
+      <div class="ri-ico">${reto.ico}</div>
+      <div class="ri-body">
+        <div class="ri-title">${reto.title}</div>
+        <div class="ri-desc">${reto.desc}</div>
+        <div class="ri-progress"><div class="ri-prog-fill" style="width:${progPct}%"></div></div>
+      </div>
+      <div class="ri-badge">
+        <div class="ri-xp">${done?'✓':'+'+reto.xp+' XP'}</div>
+        ${done?'<div class="ri-check">✅</div>':''}
+      </div>`;
+    if(!done){
+      div.onclick = ()=>completarReto(reto);
+    }
+    body.appendChild(div);
+  });
+}
+
+function completarReto(reto){
+  if(state.retosCompleted.includes(reto.id))return;
+  state.retosCompleted.push(reto.id);
+  state.streak++;
+  addXP(reto.xp);
+  showModal(reto.ico,'¡Reto Completado!',`"${reto.title}" — ¡Sigue así!`,'+'+reto.xp+' XP');
+  confetti();
+  renderRetos(document.querySelector('.tab-btn.active').textContent.toLowerCase().trim());
+}
+
+function filterRetos(f,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRetos(f);
+}
+
+// ══ QUIZ ══
+let quizAnswered = false;
+let quizShuffledOpts = [];
+let quizOrder = []; // orden aleatorio de preguntas
+
+function initQuiz(){
+  state.currentQuizQ = 0;
+  state.quizCorrect = 0;
+  state.quizTotal = 0;
+  quizAnswered = false;
+  quizOrder = shuffleArray(quizData.map((_,i)=>i));
+  renderQuestion();
+}
+
+function shuffleArray(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function renderQuestion(){
+  const q = quizData[quizOrder[state.currentQuizQ]];
+  const pct = (state.currentQuizQ/quizData.length)*100;
+  document.getElementById('quizFill').style.width = pct+'%';
+  document.getElementById('quizCounter').textContent = (state.currentQuizQ+1)+'/'+quizData.length;
+  quizAnswered = false;
+
+  quizShuffledOpts = shuffleArray(q.opts.map((_,i)=>i));
+
+  const body = document.getElementById('quizBody');
+  body.innerHTML = `
+    <div class="quiz-q-card">
+      <div class="quiz-q-ico">${q.ico}</div>
+      <div class="quiz-q-text">${q.q}</div>
+    </div>
+    <div class="quiz-options" id="quizOpts">
+      ${quizShuffledOpts.map((origIdx,newPos)=>`<button class="quiz-opt" onclick="answerQuiz(${newPos})">${q.opts[origIdx]}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <button class="quiz-next" id="quizNext" onclick="nextQuestion()">${state.currentQuizQ<quizData.length-1?'Siguiente ➡️':'Ver Resultados 🏆'}</button>`;
+}
+
+function answerQuiz(newPos){
+  if(quizAnswered)return;
+  quizAnswered = true;
+  const q = quizData[quizOrder[state.currentQuizQ]];
+  const origIdx = quizShuffledOpts[newPos];
+  const correctNewPos = quizShuffledOpts.indexOf(q.correct);
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((o,i)=>{
+    o.disabled = true;
+    if(i===correctNewPos) o.classList.add('correct');
+    else if(i===newPos && newPos!==correctNewPos) o.classList.add('wrong');
+  });
+  const correct = origIdx===q.correct;
+  if(correct){state.quizCorrect++;addXP(20);}
+  state.quizTotal++;
+  const fb = document.getElementById('quizFeedback');
+  fb.style.color = correct?'#2E7D32':'#E53935';
+  fb.innerHTML = (correct?'✅ ¡Correcto! ':'❌ Incorrecto. ')+q.exp;
+  fb.classList.add('show');
+  document.getElementById('quizNext').classList.add('show');
+}
+
+function nextQuestion(){
+  if(state.currentQuizQ < quizData.length-1){
+    state.currentQuizQ++;
+    renderQuestion();
+  } else {
+    showQuizResults();
+  }
+}
+
+function showQuizResults(){
+  const pct = Math.round((state.quizCorrect/quizData.length)*100);
+  const xpGained = state.quizCorrect*20;
+  let emoji = pct>=80?'🏆':pct>=50?'😊':'💪';
+  showModal(emoji,'¡Quiz Terminado!',`Respondiste bien ${state.quizCorrect} de ${quizData.length} preguntas (${pct}%)`,'+'+xpGained+' XP');
+  document.getElementById('quizFill').style.width='100%';
+  if(pct>=50) confetti();
+}
+
+// ══ PERFIL ══
+function updatePerfil(){
+  document.getElementById('perfilAvatar').textContent = state.avatar;
+  document.getElementById('perfilName').textContent = state.name||'Jugador';
+  document.getElementById('perfilNivel').textContent = getLevelData().name;
+  document.getElementById('perfilXP').textContent = state.xp+' XP Total';
+  document.getElementById('stRetos').textContent = state.retosCompleted.length;
+  document.getElementById('stStreak').textContent = state.streak;
+  document.getElementById('stQuiz').textContent = state.quizCorrect;
+  document.getElementById('stLevel').textContent = state.level;
+  renderMedallas();
+}
+
+function renderMedallas(){
+  const g = document.getElementById('medallasGrid');
+  g.innerHTML = '';
+  medallas.forEach(m=>{
+    const earned = m.cond();
+    const div = document.createElement('div');
+    div.className = 'medalla'+(earned?'':' locked');
+    div.innerHTML = `<div class="medalla-ico">${m.ico}</div><div class="medalla-name">${m.name}</div>`;
+    if(earned) div.title = '¡Medalla desbloqueada!';
+    g.appendChild(div);
+  });
+}
+
+// ══ MODAL ══
+function showModal(ico,title,sub,xp){
+  document.getElementById('modalIco').textContent = ico;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalSub').textContent = sub;
+  document.getElementById('modalXP').textContent = xp;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+
+// ══ TOAST ══
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ══ TIP DEL DÍA ══
+function showTip(){
+  const tip = tips[Math.floor(Math.random()*tips.length)];
+  showModal('💡','Tip del Día',tip,'+5 XP');
+  addXP(5);
+}
+
+// ══ ADIVINA EL ALIMENTO ══
+const adivinaData = [
+  {
+    pista:'Soy rojo por fuera, dulce y jugoso por dentro. Me como crujiente o en jugo. Dicen que si me comes al día, ¡el médico no te visitará!',
+    hints:['🔴 Color rojo','🌳 Crece en árbol','🍬 Sabor dulce'],
+    ico:'❓',
+    opts:[{ico:'🍎',name:'Manzana'},{ico:'🍅',name:'Tomate'},{ico:'🫑',name:'Pimiento'},{ico:'🍓',name:'Fresa'}],
+    correct:0,
+    exp:'¡Es la manzana! Rica en fibra y antioxidantes. "An apple a day keeps the doctor away" 🍎'
+  },
+  {
+    pista:'Soy amarillo y curvo. Los monos me adoran y los deportistas me comen antes de competir. Doy energía rápida y potasio para los músculos.',
+    hints:['🟡 Color amarillo','🐒 Fruta tropical','⚡ Energía rápida'],
+    ico:'❓',
+    opts:[{ico:'🍋',name:'Limón'},{ico:'🌽',name:'Maíz'},{ico:'🍌',name:'Plátano'},{ico:'🥭',name:'Mango'}],
+    correct:2,
+    exp:'¡Es el plátano! Su potasio previene calambres y da energía sostenida. 🍌'
+  },
+  {
+    pista:'Soy verde por fuera y también por dentro. Tengo una semilla grande en el centro. Las guacamoleadas son mi momento de gloria. Tengo grasas "buenas" para el cerebro.',
+    hints:['💚 Color verde','🧠 Bueno para el cerebro','🥑 Grasas saludables'],
+    ico:'❓',
+    opts:[{ico:'🥦',name:'Brócoli'},{ico:'🥑',name:'Aguacate'},{ico:'🥝',name:'Kiwi'},{ico:'🫛',name:'Ejote'}],
+    correct:1,
+    exp:'¡Es el aguacate! Sus grasas monoinsaturadas mejoran la concentración y la salud del corazón. 🥑'
+  },
+  {
+    pista:'Soy blanca, vivo en la nevera o en polvo. Los bebés me toman desde el primer día. Tengo calcio para los huesos y proteína de alta calidad.',
+    hints:['🤍 Color blanco','🦴 Para los huesos','🐄 Viene de animales'],
+    ico:'❓',
+    opts:[{ico:'🧃',name:'Jugo de naranja'},{ico:'💧',name:'Agua'},{ico:'🥛',name:'Leche'},{ico:'🫙',name:'Yogur'}],
+    correct:2,
+    exp:'¡Es la leche! Calcio + vitamina D + proteína. Fundamental en la adolescencia para los huesos. 🥛'
+  },
+  {
+    pista:'Soy pequeño, rojo y brillante. Me encuentras en el campo y en las tartas. Soy bajo en calorías pero muy alto en vitamina C y antioxidantes.',
+    hints:['🔴 Rojo brillante','🌿 Crece cerca del suelo','🍬 Dulce y ácido'],
+    ico:'❓',
+    opts:[{ico:'🍒',name:'Cereza'},{ico:'🍓',name:'Fresa'},{ico:'🫐',name:'Arándano'},{ico:'🍇',name:'Uva'}],
+    correct:1,
+    exp:'¡Es la fresa! Alta en vitamina C, antioxidantes y muy baja en calorías. 🍓'
+  },
+  {
+    pista:'Soy verde y parezco un pequeño árbol en miniatura. Mi nombre suena a ciudad italiana. Combato el cáncer y soy rey de las vitaminas. Las mamás me ponen en todo.',
+    hints:['💚 Color verde','🌳 Parece un arbolito','💊 Muy nutritivo'],
+    ico:'❓',
+    opts:[{ico:'🥦',name:'Brócoli'},{ico:'🥬',name:'Lechuga'},{ico:'🫑',name:'Pimiento'},{ico:'🌿',name:'Espinaca'}],
+    correct:0,
+    exp:'¡Es el brócoli! Rico en vitamina C, K y compuestos anticancerígenos. 🥦'
+  },
+  {
+    pista:'Soy naranja y subterráneo. El conejo me adora. Soy la estrella de la vitamina A y ayudo a la vista. Crudo crujío o cocido en sopas.',
+    hints:['🟠 Color naranja','🐇 El conejito me ama','🥕 Crece bajo tierra'],
+    ico:'❓',
+    opts:[{ico:'🍠',name:'Camote'},{ico:'🥕',name:'Zanahoria'},{ico:'🧅',name:'Cebolla'},{ico:'🥔',name:'Papa'}],
+    correct:1,
+    exp:'¡Es la zanahoria! El betacaroteno que le da su color naranja se convierte en vitamina A. 🥕'
+  },
+  {
+    pista:'Soy oval y salgo cacareando... bueno, no yo, sino quien me pone. Tengo cáscara frágil, por fuera soy blanco o café y por dentro escondo una yema amarilla. Me fríen, me hierven, me revuelven — ¡y siempre quedo rico!',
+    hints:['🟡 Yema amarilla','🐔 Viene de un ave','🍳 Se cocina de mil formas'],
+    ico:'❓',
+    opts:[{ico:'🌰',name:'Castaña'},{ico:'🥚',name:'Huevo'},{ico:'🫘',name:'Frijol'},{ico:'🥜',name:'Cacahuate'}],
+    correct:1,
+    exp:'¡Es el huevo! Contiene los 9 aminoácidos esenciales. Es de las mejores proteínas disponibles. 🥚'
+  },
+  {
+    pista:'Soy morado por fuera y por dentro. Crezco en racimos colgantes. Me fermentan para hacer vino, pero también me como fresco. Tengo antioxidantes que cuidan tu corazón.',
+    hints:['🟣 Color morado','🍇 Crece en racimos','🍷 Se usa para vino'],
+    ico:'❓',
+    opts:[{ico:'🫐',name:'Arándano'},{ico:'🍆',name:'Berenjena'},{ico:'🍇',name:'Uva'},{ico:'🫒',name:'Aceituna'}],
+    correct:2,
+    exp:'¡Es la uva! Rica en resveratrol, un antioxidante que protege el corazón y las células. 🍇'
+  },
+  {
+    pista:'Soy blanco o beige, vivo en lata o seco. Me llaman "carne de los pobres" pero soy igual de nutritivo. Soy legumbre y tengo mucha proteína vegetal y fibra.',
+    hints:['⚪ Color blanco/beige','🫘 Soy legumbre','💪 Proteína vegetal'],
+    ico:'❓',
+    opts:[{ico:'🌾',name:'Arroz'},{ico:'🫘',name:'Frijol'},{ico:'🥜',name:'Cacahuate'},{ico:'🌽',name:'Maíz'}],
+    correct:1,
+    exp:'¡Es el frijol! Proteína vegetal completa, hierro y fibra. El alimento más completo y económico. 🫘'
+  },
+  {
+    pista:'Soy verde oscuro y hoja. Popeye me comía para volverse fuerte. Tengo más hierro que la carne y vitamina K para la sangre. Me ponen en ensaladas y licuados verdes.',
+    hints:['🌿 Hoja verde oscuro','💪 Fuente de hierro','🥗 Va en ensaladas'],
+    ico:'❓',
+    opts:[{ico:'🥬',name:'Lechuga'},{ico:'🌿',name:'Espinaca'},{ico:'🫛',name:'Ejote'},{ico:'🥦',name:'Brócoli'}],
+    correct:1,
+    exp:'¡Es la espinaca! Rica en hierro, calcio y vitamina K. Perfecta en licuados para no sentir el sabor. 🌿'
+  },
+  {
+    pista:'Soy cítrico, naranja y redondo. Me exprimen cada mañana. Soy la fuente de vitamina C más famosa del mundo y ayudo a no resfriarte.',
+    hints:['🟠 Color naranja','🍊 Fruta cítrica','🤧 Ayuda al sistema inmune'],
+    ico:'❓',
+    opts:[{ico:'🍋',name:'Limón'},{ico:'🍊',name:'Naranja'},{ico:'🥭',name:'Mango'},{ico:'🍑',name:'Durazno'}],
+    correct:1,
+    exp:'¡Es la naranja! Una naranja al día cubre el 100% de vitamina C que necesitas. 🍊'
+  },
+  {
+    pista:'Soy pequeño, redondo y azul oscuro. Me llaman "superfood". Mejoro la memoria y la concentración. Los estudiantes deberían comerme antes de un examen.',
+    hints:['🔵 Color azul oscuro','🧠 Mejora la memoria','🫐 Muy pequeño'],
+    ico:'❓',
+    opts:[{ico:'🫐',name:'Arándano'},{ico:'🍇',name:'Uva negra'},{ico:'🫒',name:'Aceituna'},{ico:'🍒',name:'Cereza'}],
+    correct:0,
+    exp:'¡Es el arándano! Sus antocianinas mejoran la memoria y protegen el cerebro del envejecimiento. 🫐'
+  },
+  {
+    pista:'Soy tropical, amarillo y muy dulce. Me llaman "el rey de las frutas tropicales". Tengo bromelina, una enzima que ayuda a digerir la carne. Me cortan en rodajas o cubos.',
+    hints:['🟡 Color amarillo brillante','🌴 Fruta tropical','🍍 Corona verde en la punta'],
+    ico:'❓',
+    opts:[{ico:'🥭',name:'Mango'},{ico:'🍍',name:'Piña'},{ico:'🍌',name:'Plátano'},{ico:'🍋',name:'Limón'}],
+    correct:1,
+    exp:'¡Es la piña! La bromelina que contiene mejora la digestión y tiene propiedades antiinflamatorias. 🍍'
+  },
+  {
+    pista:'Soy cereal integral y me como en el desayuno con leche o agua. Soy alto en fibra y bajo en azúcar. Los nutriólogos me recomiendan para mantener estable el azúcar en sangre.',
+    hints:['🌾 Cereal integral','🍚 Grano pequeño','🌅 Desayuno clásico'],
+    ico:'❓',
+    opts:[{ico:'🍞',name:'Pan blanco'},{ico:'🌾',name:'Avena'},{ico:'🥣',name:'Cereal azucarado'},{ico:'🥐',name:'Croissant'}],
+    correct:1,
+    exp:'¡Es la avena! Beta-glucano, su fibra soluble, reduce el colesterol y mantiene la glucosa estable. 🌾'
+  },
+  {
+    pista:'Soy rojo, jugoso y técnicamente soy una fruta aunque te pongan en ensaladas. Tengo licopeno que previene enfermedades. Me uso en salsas, pizzas y tacos.',
+    hints:['🔴 Rojo y jugoso','🍕 Ingrediente de pizza','🌿 Técnicamente es fruta'],
+    ico:'❓',
+    opts:[{ico:'🍎',name:'Manzana roja'},{ico:'🍅',name:'Tomate'},{ico:'🫑',name:'Pimiento rojo'},{ico:'🍓',name:'Fresa'}],
+    correct:1,
+    exp:'¡Es el tomate! Su licopeno es más potente cuando está cocido, por eso las salsas son muy nutritivas. 🍅'
+  },
+  {
+    pista:'Soy blanco, grumoso y vivo en un vaso o frasco. Me hacen fermentando leche. Tengo bacterias vivas que cuidan tu intestino. Con fruta soy el snack perfecto.',
+    hints:['🤍 Blanco y cremoso','🧫 Tiene bacterias buenas','🥛 Se hace con leche'],
+    ico:'❓',
+    opts:[{ico:'🧀',name:'Queso cottage'},{ico:'🍦',name:'Helado'},{ico:'🫙',name:'Yogur'},{ico:'🥛',name:'Leche'}],
+    correct:2,
+    exp:'¡Es el yogur! Sus probióticos equilibran la microbiota intestinal. Elige el natural sin azúcar añadida. 🫙'
+  },
+  {
+    pista:'Soy verde y diminuto. Me llaman "la joya del jardín". Vivo en vaina y soy legumbre. Tengo proteína, fibra y vitamina B. Los niños me odian pero los nutriólogos me aman.',
+    hints:['💚 Verde brillante','🫛 Vive en vaina','🌱 Legumbre pequeña'],
+    ico:'❓',
+    opts:[{ico:'🫛',name:'Chícharo/Guisante'},{ico:'🥦',name:'Brócoli'},{ico:'🌿',name:'Espinaca'},{ico:'🥬',name:'Lechuga'}],
+    correct:0,
+    exp:'¡Es el chícharo! Alto en proteína vegetal, vitamina C y fibra. Los niños no saben lo que se pierden. 🫛'
+  },
+  {
+    pista:'Soy marrón por fuera y blanco por dentro. Me llaman "carbohidrato del pueblo". Cocido soy el acompañante de todo. Soy fuente de energía, potasio y vitamina C.',
+    hints:['🟤 Piel marrón','🥔 Crece bajo tierra','🍽️ Acompañamiento clásico'],
+    ico:'❓',
+    opts:[{ico:'🍠',name:'Camote'},{ico:'🥕',name:'Zanahoria'},{ico:'🥔',name:'Papa'},{ico:'🧅',name:'Cebolla'}],
+    correct:2,
+    exp:'¡Es la papa! Mala fama injusta — sola es nutritiva. El problema es freirla con grasa. 🥔'
+  },
+  {
+    pista:'Soy rojo anaranjado y tropical. Cuando estoy maduro soy muy dulce y suave. Tengo vitamina A, C y K. En México me comen con chile y limón. Los jugos de mi color son famosos.',
+    hints:['🟠 Naranja intenso','🌴 Fruta tropical','🥭 Hueso grande adentro'],
+    ico:'❓',
+    opts:[{ico:'🍑',name:'Durazno'},{ico:'🥭',name:'Mango'},{ico:'🍊',name:'Naranja'},{ico:'🍋',name:'Maracuyá'}],
+    correct:1,
+    exp:'¡Es el mango! Altísimo en vitamina A y C. El más consumido en México después del plátano. 🥭'
+  },
+  {
+    pista:'Soy oscuro, amargo y me hacen de cacao. En mi versión pura tengo antioxidantes poderosos. Me confunden con el dulce de leche pero yo soy el original saludable.',
+    hints:['🍫 Viene del cacao','🟤 Color café oscuro','💪 Versión saludable del dulce'],
+    ico:'❓',
+    opts:[{ico:'🍬',name:'Caramelo'},{ico:'🍫',name:'Chocolate negro'},{ico:'🧁',name:'Pastel'},{ico:'🍭',name:'Dulce de leche'}],
+    correct:1,
+    exp:'¡Es el chocolate negro! El cacao puro (70%+) tiene flavonoides que cuidan el corazón y el cerebro. 🍫'
+  },
+  {
+    pista:'Soy pequeño, duro y oleoso. Me llaman nuez de la India pero no vengo de ahí. Tengo grasas buenas, magnesio y zinc. Soy el snack ideal para el cerebro entre clases.',
+    hints:['🥜 Fruto seco','🟤 Forma de media luna','🧠 Bueno para el cerebro'],
+    ico:'❓',
+    opts:[{ico:'🌰',name:'Castaña'},{ico:'🥜',name:'Cacahuate'},{ico:'🫘',name:'Nuez de la India'},{ico:'🌰',name:'Almendra'}],
+    correct:2,
+    exp:'¡Es la nuez de la India (anacardo)! Magnesio para los músculos y zinc para el sistema inmune. 🫘'
+  },
+  {
+    pista:'Soy verde intenso y me prensan para sacar aceite. Soy fruta mediterránea. En pizza, ensaladas y tapas soy protagonista. Tengo grasas monoinsaturadas y mucha vitamina E.',
+    hints:['💚 Verde o negro','🫒 Fruta del mediterráneo','🫙 Se usa para hacer aceite'],
+    ico:'❓',
+    opts:[{ico:'🥑',name:'Aguacate'},{ico:'🫒',name:'Aceituna'},{ico:'🥦',name:'Brócoli'},{ico:'🍈',name:'Melón'}],
+    correct:1,
+    exp:'¡Es la aceituna! Su aceite es la grasa más estudiada para la salud cardiovascular. 🫒'
+  },
+];
+
+let adivinaIdx = 0;
+let adivinaCorrect = 0;
+let adivinaAnswered = false;
+let adivinaShuffled = [];
+let adivinaOrder = []; // orden aleatorio de preguntas
+
+function initAdivina(){
+  adivinaIdx = 0;
+  adivinaCorrect = 0;
+  adivinaAnswered = false;
+  adivinaOrder = shuffleArray(adivinaData.map((_,i)=>i));
+  renderAdivina();
+}
+
+function renderAdivina(){
+  const q = adivinaData[adivinaOrder[adivinaIdx]];
+  const pct = (adivinaIdx / adivinaData.length) * 100;
+  document.getElementById('adivinaFill').style.width = pct + '%';
+  document.getElementById('adivinaCounter').textContent = (adivinaIdx+1) + '/' + adivinaData.length;
+  document.getElementById('adivinaScore').textContent = adivinaCorrect;
+  adivinaAnswered = false;
+
+  // Barajar opciones
+  adivinaShuffled = shuffleArray(q.opts.map((_,i)=>i));
+
+  const body = document.getElementById('adivinaBody');
+  body.innerHTML = `
+    <div class="adivina-pista-card">
+      <div class="adivina-pista-ico" id="adivinaPistaIco">${q.ico}</div>
+      <div class="adivina-pista-label">🔍 Pista</div>
+      <div class="adivina-pista-text">${q.pista}</div>
+      <div class="adivina-hint-row">${q.hints.map(h=>`<span class="adivina-hint">${h}</span>`).join('')}</div>
+    </div>
+    <div class="adivina-opts" id="adivinaOpts">
+      ${adivinaShuffled.map((origIdx,newPos)=>`
+        <button class="adivina-opt" onclick="answerAdivina(${newPos})">
+          <span class="opt-ico">${q.opts[origIdx].ico}</span>
+          ${q.opts[origIdx].name}
+        </button>`).join('')}
+    </div>
+    <div class="adivina-feedback" id="adivinaFeedback"></div>
+    <button class="adivina-next" id="adivinaNext" onclick="nextAdivina()">
+      ${adivinaIdx < adivinaData.length-1 ? 'Siguiente ➡️' : 'Ver Resultados 🏆'}
+    </button>`;
+}
+
+function answerAdivina(newPos){
+  if(adivinaAnswered) return;
+  adivinaAnswered = true;
+  const q = adivinaData[adivinaOrder[adivinaIdx]];
+  const origIdx = adivinaShuffled[newPos];
+  const correctNewPos = adivinaShuffled.indexOf(q.correct);
+  const opts = document.querySelectorAll('.adivina-opt');
+  opts.forEach((o,i)=>{
+    o.disabled = true;
+    if(i === correctNewPos) o.classList.add('correct');
+    else if(i === newPos && newPos !== correctNewPos) o.classList.add('wrong');
+  });
+  document.getElementById('adivinaPistaIco').textContent = q.opts[q.correct].ico;
+  const correct = origIdx === q.correct;
+  if(correct){ adivinaCorrect++; addXP(25); }
+  document.getElementById('adivinaScore').textContent = adivinaCorrect;
+  const fb = document.getElementById('adivinaFeedback');
+  fb.style.color = correct ? '#2E7D32' : '#E53935';
+  fb.innerHTML = (correct ? '✅ ¡Correcto! ' : '❌ Era ' + q.opts[q.correct].name + '. ') + q.exp;
+  fb.classList.add('show');
+  document.getElementById('adivinaNext').classList.add('show');
+}
+
+function nextAdivina(){
+  if(adivinaIdx < adivinaData.length - 1){
+    adivinaIdx++;
+    renderAdivina();
+  } else {
+    const pct = Math.round((adivinaCorrect / adivinaData.length) * 100);
+    let emoji = pct >= 80 ? '🏆' : pct >= 50 ? '😊' : '💪';
+    showModal(emoji, '¡Juego Terminado!',
+      `Adivinaste ${adivinaCorrect} de ${adivinaData.length} alimentos (${pct}%)`,
+      '+' + (adivinaCorrect * 25) + ' XP');
+    document.getElementById('adivinaFill').style.width = '100%';
+    if(pct>=50) confetti();
+  }
+}
+
+// ══ CONFETTI ══
+function confetti(){
+  const phone = document.querySelector('.phone');
+  const colors = ['#FFD600','#43A047','#FF8F00','#E53935','#42A5F5','#AB47BC'];
+  for(let i=0;i<24;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = Math.random()*100+'%';
+    c.style.top = '-10px';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration = (1.5+Math.random()*2)+'s';
+    c.style.animationDelay = Math.random()*0.5+'s';
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    c.style.width = (8+Math.random()*8)+'px';
+    c.style.height = (8+Math.random()*8)+'px';
+    phone.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+// ══ SERVICE WORKER (PWA) ══
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
